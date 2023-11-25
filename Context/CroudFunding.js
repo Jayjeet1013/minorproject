@@ -1,6 +1,8 @@
+"use client"
+
 import React, { useState, useEffect } from "react";
 import Web3Modal from "web3modal";
-import { ethers } from " ethers";
+import { ethers } from "ethers";
 
 import { CrowdFundingABI, CrowdFundingAddress } from "./contants";
 
@@ -127,4 +129,59 @@ export const CrowdFundingProvider = ({ children }) => {
   };
 
   //checkifwallet is connected
+
+  const checkIfWalletConnected = async () => {
+    try {
+      if (!window.ethereum)
+        return setOpenError(true), setError("Install MetaMask");
+      const accounts = await window.ethereum.request({
+        method: "eth_accounts",
+      });
+
+      if (accounts.length) {
+        setCurrentAccount(accounts[0]);
+      } else {
+        console.log("No Account Found");
+      }
+    } catch (error) {
+      console.log("Something wrong while connecting to wallet");
+    }
+  };
+
+  useEffect(() => {
+    checkIfWalletConnected();
+  }, []);
+
+  //connect wallet function
+
+  const connectWallet = async () => {
+    try {
+      if (!window.ethereum) return console.log("install Metamask");
+
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+
+      setCurrentAccount(accounts[0]);
+    } catch (error) {
+      console.log("error while connecting to wallet");
+    }
+  };
+
+  return (
+    <CrowdFundingContext.Provider
+      value={{
+        titleData,
+        currentAccount,
+        createCampaign,
+        getCampaigns,
+        getUserCampaigns,
+        donate,
+        getDonations,
+        connectWallet,
+      }}
+    >
+      {children}
+    </CrowdFundingContext.Provider>
+  );
 };

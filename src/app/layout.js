@@ -1,6 +1,7 @@
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { Navbar,Footer } from '../../Components'
+import { CrowdFundingProvider } from '../../Context/CroudFunding'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -12,9 +13,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <>
+<CrowdFundingProvider>
       <Navbar/>
       <body className={inter.className}>{children}</body>
       <Footer/>
+</CrowdFundingProvider>
     </>
   )
 }
